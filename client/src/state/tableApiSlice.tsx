@@ -3,7 +3,8 @@ import type { TableInterface } from "../data/Table";
 import type { TableCategory } from "../enums/TableCategory";
 import type { TableType } from "../enums/TableType";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:3000/api/v1";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api/v1";
+const NEPTUN_CODE = import.meta.env.VITE_NEPTUN_CODE || "DMKSEH";
 
 export type CreateTableInput = {
   name?: string;
@@ -47,7 +48,12 @@ export const tableApiSlice = createApi({
   tagTypes: ["Table"],
   endpoints: (build) => ({
     getAll: build.query<TableInterface[], void>({
-      query: () => "/tables",
+      query: () => ({
+        url: "/tables",
+        headers: {
+          "X-Neptun-Code": NEPTUN_CODE,
+        },
+      }),
       transformResponse: (response: any) =>
         Array.isArray(response) ? response.map(normalizeTable) : [],
       providesTags: (result) =>
@@ -63,6 +69,9 @@ export const tableApiSlice = createApi({
         url: "/tables",
         method: "POST",
         body,
+        headers: {
+          "X-Neptun-Code": NEPTUN_CODE,
+        },
       }),
       transformResponse: (response: any) => normalizeTable(response),
       invalidatesTags: [{ type: "Table", id: "LIST" }],
@@ -72,6 +81,9 @@ export const tableApiSlice = createApi({
         url: `/tables/${id}`,
         method: "PATCH",
         body,
+        headers: {
+          "X-Neptun-Code": NEPTUN_CODE,
+        },
       }),
       transformResponse: (response: any) => normalizeTable(response),
       invalidatesTags: (_result, _error, arg) => [
@@ -84,6 +96,9 @@ export const tableApiSlice = createApi({
         url: `/tables/${id}/position`,
         method: "PATCH",
         body: position,
+        headers: {
+          "X-Neptun-Code": NEPTUN_CODE,
+        },
       }),
       transformResponse: (response: any) => normalizeTable(response),
       invalidatesTags: (_result, _error, arg) => [
@@ -95,6 +110,9 @@ export const tableApiSlice = createApi({
       query: (id) => ({
         url: `/tables/${id}`,
         method: "DELETE",
+        headers: {
+          "X-Neptun-Code": NEPTUN_CODE,
+        },
       }),
       invalidatesTags: (_result, _error, arg) => [
         { type: "Table", id: String(arg) },
@@ -102,7 +120,12 @@ export const tableApiSlice = createApi({
       ],
     }),
     getTimeslots: build.query<TableTimeslot[], { id: number; date: string }>({
-      query: ({ id, date }) => `/tables/${id}/timeslots?date=${encodeURIComponent(date)}`,
+      query: ({ id, date }) => ({
+        url: `/tables/${id}/timeslots?date=${encodeURIComponent(date)}`,
+        headers: {
+          "X-Neptun-Code": NEPTUN_CODE,
+        },
+      }),
     }),
   }),
 });

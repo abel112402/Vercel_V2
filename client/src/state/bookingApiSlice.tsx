@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { type BookingInfo, type BookingState } from "./bookingSlice";
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api/v1";
+const NEPTUN_CODE = import.meta.env.VITE_NEPTUN_CODE || "DMKSEH";
 
 export interface UploadBookingInfo {
   tableId: number;
@@ -24,11 +25,21 @@ export const bookingApiSlice = createApi({
   tagTypes: ["Booking"],
   endpoints: (build) => ({
     getAll: build.query<BookingState, void>({
-      query: () => "/bookings",
+      query: () => ({
+        url: "/bookings",
+        headers: {
+          "X-Neptun-Code": NEPTUN_CODE,
+        },
+      }),
       providesTags: [{ type: "Booking", id: "LIST" }],
     }),
     getMine: build.query<BookingInfo[], void>({
-      query: () => "/bookings/my",
+      query: () => ({
+        url: "/bookings/my",
+        headers: {
+          "X-Neptun-Code": NEPTUN_CODE,
+        },
+      }),
       providesTags: [{ type: "Booking", id: "MINE" }],
     }),
     updateStatus: build.mutation<void, { id: number; status: string }>({
@@ -36,6 +47,9 @@ export const bookingApiSlice = createApi({
         url: `/bookings/${id}/status`,
         method: "PATCH",
         body: { status },
+        headers: {
+          "X-Neptun-Code": NEPTUN_CODE,
+        },
       }),
       invalidatesTags: (_result, _error, { id }) => [
         { type: "Booking", id },
@@ -44,7 +58,12 @@ export const bookingApiSlice = createApi({
       ],
     }),
     getById: build.query<BookingInfo, number>({
-      query: (id) => `/bookings/${id}`,
+      query: (id) => ({
+        url: `/bookings/${id}`,
+        headers: {
+          "X-Neptun-Code": NEPTUN_CODE,
+        },
+      }),
       providesTags: (_result, _error, id) => [{ type: "Booking", id }],
     }),
     book: build.mutation<BookingInfo, UploadBookingInfo>({
@@ -52,6 +71,9 @@ export const bookingApiSlice = createApi({
         url: "/bookings",
         method: "POST",
         body: bookingInfo,
+        headers: {
+          "X-Neptun-Code": NEPTUN_CODE,
+        },
       }),
       invalidatesTags: [
         { type: "Booking", id: "LIST" },

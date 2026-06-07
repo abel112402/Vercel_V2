@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api/v1";
+const NEPTUN_CODE = import.meta.env.VITE_NEPTUN_CODE || "DMKSEH";
 
 export const authSlice = createApi({
   reducerPath: "authSlice",
@@ -12,6 +13,9 @@ export const authSlice = createApi({
     register: build.mutation({
       query: (credentials) => ({
         url: "/auth/register",
+        headers: {
+          "X-Neptun-Code": NEPTUN_CODE,
+        },
         method: "POST",
         body: credentials,
       }),
@@ -19,6 +23,9 @@ export const authSlice = createApi({
     login: build.mutation({
       query: (credentials) => ({
         url: "/auth/login",
+        headers: {
+          "X-Neptun-Code": NEPTUN_CODE,
+        },
         method: "POST",
         body: credentials,
       }),
@@ -26,11 +33,19 @@ export const authSlice = createApi({
     logout: build.mutation<void, void>({
       query: () => ({
         url: "/auth/logout",
+        headers: {
+          "X-Neptun-Code": NEPTUN_CODE,
+        },
         method: "POST",
       }),
     }),
     getMe: build.query({
-      query: () => "/auth/me",
+      query: () => ({
+        url: "/auth/me",
+        headers: {
+          "X-Neptun-Code": NEPTUN_CODE,
+        },
+      }),
     }),
   }),
 });
