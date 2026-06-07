@@ -57,7 +57,7 @@ export const AdminBookingsPage = () => {
       <Stack spacing={3}>
         <Typography variant="h4">Received Bookings</Typography>
         {bookings?.bookings?.length ? (
-          bookings.map((booking) => (
+          bookings.bookings.map((booking: any) => (
             <Card key={booking.id}>
               <CardContent>
                 <Stack spacing={1}>
