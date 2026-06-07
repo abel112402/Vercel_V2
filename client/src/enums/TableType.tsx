@@ -1,0 +1,1 @@
+export type TableType = "snooker" | "foosball" | "air-hockey";

@@ -1,0 +1,1 @@
+export type TableCategory = "competition" | "normal" | "kids";
